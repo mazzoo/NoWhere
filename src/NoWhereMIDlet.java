@@ -9,46 +9,16 @@ public class NoWhereMIDlet
 	implements CommandListener {
 
 	private Form mMainForm;
+	private Display display;
 
-	public StringItem here;
-	public StringItem dest;
-	public ItemCommandListener lDest;
+	private StringItem here;
+	private StringItem dest;
 
 	public NoWhereMIDlet() {
 		mMainForm = new Form("NoWhereMIDlet");
 
-
-		try {
-			Criteria cr = new Criteria();
-			cr.setHorizontalAccuracy(500);
-			LocationProvider lp = LocationProvider.getInstance(cr);
-
-			// get the location, one minute timeout
-			Location l;
-			try {
-				l = lp.getLocation(60);
-			} catch (Exception e) {
-				// FIXME
-				l = null;
-			}
-
-			Coordinates c = l.getQualifiedCoordinates();
-
-			if (c != null) {
-				// use coordinate information
-				mMainForm.append(new StringItem(null, "got loc\n"));
-			}
-
-		} catch (LocationException e) {
-			mMainForm.append(new StringItem(null, "no loc\n"));
-		}
-
 		here = new StringItem(null, "here\n");
 		dest = new StringItem(null, "dest\n");
-
-		//lDest.commandAction(updateDest, dest);
-
-		dest.setItemCommandListener(lDest);
 
 		mMainForm.append(here);
 		mMainForm.append(dest);
@@ -61,7 +31,11 @@ public class NoWhereMIDlet
 	}
 
 	public void startApp() {
-		Display.getDisplay(this).setCurrent(mMainForm);
+		display = Display.getDisplay(this);
+		display.setCurrent(mMainForm);
+
+		Thread runner = new Thread(new PosReader(this));
+		runner.start();
 	}
 
 	public void pauseApp() {}
@@ -71,25 +45,28 @@ public class NoWhereMIDlet
 	public void commandAction(Command c, Displayable s) {
 		notifyDestroyed();
 	}
+	public void updateLoc(Coordinates c) {
+		mMainForm.append(new StringItem(null, "got loc\n"));
+	}
 }
 
 class PosReader implements Runnable{
 	private NoWhereMIDlet MIDlet;
 
-	public PosReader(NoWhereMIDlet MIDlet){
+	public PosReader(NoWhereMIDlet MIDlet) {
 		this.MIDlet = MIDlet;
 		//System.out.println("Thread PosReader...");
 	}
 
 	public void run(){
 		/*
-		try{
-			transmit();
-			System.out.println("Thread Run...");
-		}catch(Exception error){ 
-			System.err.println(error.toString());
-		} 
-		*/
+		   try{
+		   transmit();
+		   System.out.println("Thread Run...");
+		   }catch(Exception error){ 
+		   System.err.println(error.toString());
+		   } 
+		   */
 
 		Criteria cr = new Criteria();
 		cr.setHorizontalAccuracy(5);
@@ -101,10 +78,18 @@ class PosReader implements Runnable{
 		}
 
 		// get the location, one minute timeout
-		Location l;
-		try {
-			l = lp.getLocation(60);
-		} catch (Exception e) {
+		while (true) {
+			Location l = null;
+			try {
+				l = lp.getLocation(60);
+			} catch (Exception e) {
+			}
+			Coordinates c = l.getQualifiedCoordinates();
+
+			if (c != null) {
+				MIDlet.updateLoc(c);
+				//mMainForm.append(new StringItem(null, "got loc\n"));
+			}
 		}
 	}
 
