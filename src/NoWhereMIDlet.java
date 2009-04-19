@@ -26,10 +26,6 @@ public class NoWhereMIDlet
 		mMainForm.setCommandListener(this);
 	}
 
-	private void updateDest() {
-		here = new StringItem(null, "there\n");
-	}
-
 	public void startApp() {
 		display = Display.getDisplay(this);
 		display.setCurrent(mMainForm);
@@ -45,8 +41,12 @@ public class NoWhereMIDlet
 	public void commandAction(Command c, Displayable s) {
 		notifyDestroyed();
 	}
-	public void updateLoc(Coordinates c) {
-		mMainForm.append(new StringItem(null, "got loc\n"));
+	public void updateHere(Coordinates c) {
+
+		here.setText("on the move lat: " +
+			c.getLatitude() + "lon: " +
+			c.getLongitude() + "\n");
+		display.repaint();
 	}
 }
 
@@ -69,38 +69,33 @@ class PosReader implements Runnable{
 		   */
 
 		Criteria cr = new Criteria();
-		cr.setHorizontalAccuracy(5);
+		//cr.setHorizontalAccuracy(5);
 		LocationProvider lp = null;
 
 		try {
 			lp = LocationProvider.getInstance(cr);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 		}
+
+		//lp.setLocationListener();
 
 		// get the location, one minute timeout
 		while (true) {
 			Location l = null;
 			try {
 				l = lp.getLocation(60);
-			} catch (Exception e) {
-			}
-			Coordinates c = l.getQualifiedCoordinates();
+			} catch (Throwable e) {}
 
-			if (c != null) {
-				MIDlet.updateLoc(c);
-				//mMainForm.append(new StringItem(null, "got loc\n"));
+			if (l != null) {
+				Coordinates c = l.getQualifiedCoordinates();
+
+				if (c != null) {
+					MIDlet.updateHere(c);
+					//mMainForm.append(new StringItem(null, "got loc\n"));
+				}
 			}
 		}
 	}
 
-	public void start(){
-		Thread thread = new Thread(this);
-		try{
-			thread.start();
-			System.out.println("Thread Start...");
-		}catch(Exception error){}
-	}
-
-	private void transmit() throws IOException{} 
 
 }
