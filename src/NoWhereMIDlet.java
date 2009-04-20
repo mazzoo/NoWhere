@@ -30,8 +30,30 @@ public class NoWhereMIDlet
 		display = Display.getDisplay(this);
 		display.setCurrent(mMainForm);
 
-		Thread runner = new Thread(new PosReader(this));
-		runner.start();
+		Criteria cr = new Criteria();
+		//cr.setHorizontalAccuracy(5);
+		cr.setCostAllowed(false);
+		LocationProvider lp = null;
+
+		try {
+			lp = LocationProvider.getInstance(cr);
+		} catch (Throwable e) {
+		}
+
+		lp.setLocationListener(new LocationListener(){
+			public void locationUpdated(LocationProvider lp, Location l){
+
+				if (l != null) {
+					Coordinates c = l.getQualifiedCoordinates();
+
+					if (c != null) {
+						updateHere(c);
+					}
+				}
+
+			}
+			public void providerStateChanged(LocationProvider lp, int s){}
+		}, 1, 1, 1);
 	}
 
 	public void pauseApp() {}
@@ -43,59 +65,11 @@ public class NoWhereMIDlet
 	}
 	public void updateHere(Coordinates c) {
 
-		here.setText("on the move lat: " +
-			c.getLatitude() + "lon: " +
-			c.getLongitude() + "\n");
-		display.repaint();
+		int latDeg, latMin, latFrag;
+		int lonDeg, lonMin, lonFrag;
+		here.setText(
+			"lat: " + c.convert(c.getLatitude() , 2) + "\n" +
+			"lon: " + c.convert(c.getLongitude(), 2) + "\n" );
+
 	}
-}
-
-class PosReader implements Runnable{
-	private NoWhereMIDlet MIDlet;
-
-	public PosReader(NoWhereMIDlet MIDlet) {
-		this.MIDlet = MIDlet;
-		//System.out.println("Thread PosReader...");
-	}
-
-	public void run(){
-		/*
-		   try{
-		   transmit();
-		   System.out.println("Thread Run...");
-		   }catch(Exception error){ 
-		   System.err.println(error.toString());
-		   } 
-		   */
-
-		Criteria cr = new Criteria();
-		//cr.setHorizontalAccuracy(5);
-		LocationProvider lp = null;
-
-		try {
-			lp = LocationProvider.getInstance(cr);
-		} catch (Throwable e) {
-		}
-
-		//lp.setLocationListener();
-
-		// get the location, one minute timeout
-		while (true) {
-			Location l = null;
-			try {
-				l = lp.getLocation(60);
-			} catch (Throwable e) {}
-
-			if (l != null) {
-				Coordinates c = l.getQualifiedCoordinates();
-
-				if (c != null) {
-					MIDlet.updateHere(c);
-					//mMainForm.append(new StringItem(null, "got loc\n"));
-				}
-			}
-		}
-	}
-
-
 }
