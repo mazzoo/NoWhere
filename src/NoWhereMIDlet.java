@@ -21,16 +21,16 @@ public class NoWhereMIDlet
 	public NoWhereMIDlet() {
 		mMainForm = new Form("NoWhereMIDlet");
 
-		here = new StringItem(null, "here\n");
-		dest = new StringItem(null, "dest\n");
-		dist = new StringItem(null, "dist\n");
+		here = new StringItem(null, "here:\n\n\n");
+		dest = new StringItem(null, "dest:\n\n\n");
+		dist = new StringItem(null, "dist: ");
 
 		mMainForm.append(here);
 		mMainForm.append(dest);
 		mMainForm.append(dist);
 
 		cHere = new Coordinates( 0.0,  0.0, (float)  0.0);
-		cDest = new Coordinates(12.0, 48.0, (float)400.0);
+		cDest = new Coordinates(48.0, 12.0, (float)400.0);
 		updateDest();
 
 		mMainForm.addCommand(new Command("Exit", Command.EXIT, 0));
@@ -77,8 +77,8 @@ public class NoWhereMIDlet
 
 		here.setText(
 			"here:\n" +
-			"lat: " + c.convert(c.getLatitude() , 2) + "\n" +
-			"lon: " + c.convert(c.getLongitude(), 2) + "\n" );
+			"  lat:  " + c.convert(c.getLatitude() , 2) + "\n" +
+			"  lon:  " + c.convert(c.getLongitude(), 2) + "\n" );
 		cHere = c;
 		updateDist();
 	}
@@ -86,16 +86,36 @@ public class NoWhereMIDlet
 
 		dest.setText(
 			"dest:\n" +
-			"lat: " + cDest.convert(cDest.getLatitude() , 2) + "\n" +
-			"lon: " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
+			"  lat:  " + cDest.convert(cDest.getLatitude() , 2) + "\n" +
+			"  lon:  " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
 		//cDest = c:
 		updateDist();
 	}
 
 	public void updateDist() {
+		int angle = (int)cHere.azimuthTo(cDest);
+		String dir = "???";
+
+		if (angle >  23 && angle <=  67)
+			dir = "NE";
+		if (angle >  67 && angle <= 113)
+			dir = "E";
+		if (angle > 113 && angle <= 158)
+			dir = "SE";
+		if (angle > 158 && angle <= 203)
+			dir = "S";
+		if (angle > 203 && angle <= 248)
+			dir = "SW";
+		if (angle > 248 && angle <= 293)
+			dir = "W";
+		if (angle > 293 && angle <= 338)
+			dir = "NW";
+		if (angle > 338 || angle <=  23)
+			dir = "N";
+
 		dist.setText(
-			"\ndist: " + cHere.distance(cDest) + "m\n" +
-			"      " + cHere.azimuthTo(cDest) + "°"
+			"\ndist: " + cHere.distance(cDest) + "m  " +
+			"      " + angle + "° " + dir
 			);
 	}
 }
