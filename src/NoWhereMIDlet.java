@@ -13,15 +13,26 @@ public class NoWhereMIDlet
 
 	private StringItem here;
 	private StringItem dest;
+	private StringItem dist;
+
+	private Coordinates cHere;
+	private Coordinates cDest;
 
 	public NoWhereMIDlet() {
 		mMainForm = new Form("NoWhereMIDlet");
 
 		here = new StringItem(null, "here\n");
 		dest = new StringItem(null, "dest\n");
+		dist = new StringItem(null, "dist\n");
 
 		mMainForm.append(here);
 		mMainForm.append(dest);
+		mMainForm.append(dist);
+
+		cHere = new Coordinates( 0.0,  0.0, (float)  0.0);
+		cDest = new Coordinates(12.0, 48.0, (float)400.0);
+		updateDest();
+
 		mMainForm.addCommand(new Command("Exit", Command.EXIT, 0));
 		mMainForm.setCommandListener(this);
 	}
@@ -37,8 +48,7 @@ public class NoWhereMIDlet
 
 		try {
 			lp = LocationProvider.getInstance(cr);
-		} catch (Throwable e) {
-		}
+		} catch (Throwable e) {}
 
 		lp.setLocationListener(new LocationListener(){
 			public void locationUpdated(LocationProvider lp, Location l){
@@ -65,11 +75,27 @@ public class NoWhereMIDlet
 	}
 	public void updateHere(Coordinates c) {
 
-		int latDeg, latMin, latFrag;
-		int lonDeg, lonMin, lonFrag;
 		here.setText(
+			"here:\n" +
 			"lat: " + c.convert(c.getLatitude() , 2) + "\n" +
 			"lon: " + c.convert(c.getLongitude(), 2) + "\n" );
+		cHere = c;
+		updateDist();
+	}
+	public void updateDest() {
 
+		dest.setText(
+			"dest:\n" +
+			"lat: " + cDest.convert(cDest.getLatitude() , 2) + "\n" +
+			"lon: " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
+		//cDest = c:
+		updateDist();
+	}
+
+	public void updateDist() {
+		dist.setText(
+			"\ndist: " + cHere.distance(cDest) + "m\n" +
+			"      " + cHere.azimuthTo(cDest) + "°"
+			);
 	}
 }
