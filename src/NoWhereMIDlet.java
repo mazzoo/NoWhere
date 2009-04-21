@@ -1,3 +1,10 @@
+/*
+ * NoWhere - a minimalistic GPS tool for geocaching
+ * (c) 2009 Matthias Wenzel
+ *          Simon Schoar
+ *
+ * licensed under GPL v2
+ */
 import java.io.*;
 import javax.microedition.io.*;
 import javax.microedition.lcdui.*;
