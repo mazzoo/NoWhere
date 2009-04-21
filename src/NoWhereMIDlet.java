@@ -18,12 +18,22 @@ public class NoWhereMIDlet
 	private Coordinates cHere;
 	private Coordinates cDest;
 
+	private ItemCommandListener destCl;
+
 	public NoWhereMIDlet() {
 		mMainForm = new Form("NoWhereMIDlet");
 
 		here = new StringItem(null, "here:\n\n\n");
 		dest = new StringItem(null, "dest:\n\n\n");
 		dist = new StringItem(null, "dist: ");
+
+		destCl = new ItemCommandListener(){
+				public void commandAction(Command c, Item item){
+					mMainForm.append(new StringItem(null, "action"));
+					new Alert("hit me harder");
+				}
+			};
+		dest.setItemCommandListener(destCl);
 
 		mMainForm.append(here);
 		mMainForm.append(dest);
@@ -90,6 +100,7 @@ public class NoWhereMIDlet
 			"  lon:  " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
 		//cDest = c:
 		updateDist();
+		dest.setItemCommandListener(destCl);
 	}
 
 	public void updateDist() {
@@ -115,7 +126,7 @@ public class NoWhereMIDlet
 
 		dist.setText(
 			"\ndist: " + cHere.distance(cDest) + "m  " +
-			"      " + angle + "° " + dir
+			angle + "° " + dir
 			);
 	}
 }
