@@ -31,8 +31,8 @@ public class NoWhereMIDlet
 		mMainForm = new Form("NoWhereMIDlet");
 
 		here = new StringItem(null, "here:\n\n\n");
-		destLon = new TextField(null, "destLon:\n", 5, 0);
-		destLat = new TextField(null, "destLat:\n", 5, 0);
+		destLon = new TextField("Dest Lon:", "", 150, TextField.ANY);
+		destLat = new TextField("Dest Lat", "", 150, TextField.ANY);
 		dist = new StringItem(null, "dist: ");
 
 		destLon.setItemCommandListener(new ItemCommandListener() {
@@ -40,6 +40,7 @@ public class NoWhereMIDlet
 				System.err.println("event EEEveEEEnt\n");
 				mMainForm.append(new StringItem(null, "action"));
 				new Alert("hit me harder");
+				System.err.println("event LON\n");
 			}
 		    }
 		);
@@ -48,6 +49,7 @@ public class NoWhereMIDlet
 				System.err.println("event EEEveEEEnt\n");
 				mMainForm.append(new StringItem(null, "action"));
 				new Alert("hit me harder");
+				System.err.println("event LAT\n");
 			}
 		    }
 		);
