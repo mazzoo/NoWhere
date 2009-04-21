@@ -18,7 +18,8 @@ public class NoWhereMIDlet
 	private Form mMainForm;
 
 	private StringItem here;
-	private StringItem dest;
+	private TextField destLon;
+	private TextField destLat;
 	private StringItem dist;
 
 	private Coordinates cHere;
@@ -30,11 +31,21 @@ public class NoWhereMIDlet
 		mMainForm = new Form("NoWhereMIDlet");
 
 		here = new StringItem(null, "here:\n\n\n");
-		dest = new StringItem(null, "dest:\n\n\n");
+		destLon = new TextField(null, "destLon:\n", 5, 0);
+		destLat = new TextField(null, "destLat:\n", 5, 0);
 		dist = new StringItem(null, "dist: ");
 
-		dest.setItemCommandListener(new ItemCommandListener() {
+		destLon.setItemCommandListener(new ItemCommandListener() {
 			public void commandAction(Command c, Item item) {
+				System.err.println("event EEEveEEEnt\n");
+				mMainForm.append(new StringItem(null, "action"));
+				new Alert("hit me harder");
+			}
+		    }
+		);
+		destLat.setItemCommandListener(new ItemCommandListener() {
+			public void commandAction(Command c, Item item) {
+				System.err.println("event EEEveEEEnt\n");
 				mMainForm.append(new StringItem(null, "action"));
 				new Alert("hit me harder");
 			}
@@ -42,7 +53,8 @@ public class NoWhereMIDlet
 		);
 
 		mMainForm.append(here);
-		mMainForm.append(dest);
+		mMainForm.append(destLon);
+		mMainForm.append(destLat);
 		mMainForm.append(dist);
 
 		cHere = new Coordinates( 0.0,  0.0, (float)  0.0);
@@ -84,6 +96,8 @@ public class NoWhereMIDlet
 			}
 			public void providerStateChanged(LocationProvider lp, int s){}
 		}, 1, 1, 1);
+
+		System.err.println("startup done\n");
 	}
 
 	public void pauseApp() {}
@@ -106,9 +120,11 @@ public class NoWhereMIDlet
 	}
 	
 	public void updateDest() {
-		dest.setText(
+		destLat.setString(
 			"dest:\n" +
-			"  lat:  " + cDest.convert(cDest.getLatitude() , 2) + "\n" +
+			"  lat:  " + cDest.convert(cDest.getLatitude() , 2) + "\n" );
+		destLon.setString(
+			"dest:\n" +
 			"  lon:  " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
 		//cDest = c:
 		updateDist();
