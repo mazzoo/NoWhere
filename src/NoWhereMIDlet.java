@@ -26,6 +26,7 @@ public class NoWhereMIDlet
 	private Coordinates cDest;
 
 	private Command mCommandExit = new Command("Exit", Command.EXIT, 0);
+	private Command mCommandUpdate = new Command("Update", Command.ITEM, 0);
 
 	public NoWhereMIDlet() {
 		mMainForm = new Form("NoWhereMIDlet");
@@ -53,6 +54,9 @@ public class NoWhereMIDlet
 			}
 		    }
 		);
+
+		destLon.setDefaultCommand(mCommandUpdate);
+		destLat.setDefaultCommand(mCommandUpdate);
 
 		mMainForm.append(here);
 		mMainForm.append(destLon);
