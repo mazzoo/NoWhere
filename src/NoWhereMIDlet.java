@@ -115,8 +115,8 @@ public class NoWhereMIDlet
 	public void updateHere(Coordinates c) {
 		here.setText(
 			"here:\n" +
-			"  lat:  " + c.convert(c.getLatitude() , 2) + "\n" +
-			"  lon:  " + c.convert(c.getLongitude(), 2) + "\n" );
+			"  lat:  " + c.convert(c.getLatitude() , Coordinates.DD_MM) + "\n" +
+			"  lon:  " + c.convert(c.getLongitude(), Coordinates.DD_MM) + "\n" );
 		cHere = c;
 		updateDist();
 	}
