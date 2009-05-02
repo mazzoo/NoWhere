@@ -38,19 +38,17 @@ public class NoWhereMIDlet
 
 		destLon.setItemCommandListener(new ItemCommandListener() {
 			public void commandAction(Command c, Item item) {
-				System.err.println("event EEEveEEEnt\n");
-				mMainForm.append(new StringItem(null, "action"));
-				new Alert("hit me harder");
 				System.err.println("event LON\n");
+				cDest.setLongitude(Coordinates.convert(destLon.getString()));
+				updateDist();
 			}
 		    }
 		);
 		destLat.setItemCommandListener(new ItemCommandListener() {
 			public void commandAction(Command c, Item item) {
-				System.err.println("event EEEveEEEnt\n");
-				mMainForm.append(new StringItem(null, "action"));
-				new Alert("hit me harder");
 				System.err.println("event LAT\n");
+				cDest.setLatitude(Coordinates.convert(destLat.getString()));
+				updateDist();
 			}
 		    }
 		);
@@ -127,11 +125,9 @@ public class NoWhereMIDlet
 	
 	public void updateDest() {
 		destLat.setString(
-			"dest:\n" +
-			"  lat:  " + cDest.convert(cDest.getLatitude() , 2) + "\n" );
+			cDest.convert(cDest.getLatitude() , 2));
 		destLon.setString(
-			"dest:\n" +
-			"  lon:  " + cDest.convert(cDest.getLongitude(), 2) + "\n" );
+			cDest.convert(cDest.getLongitude(), 2));
 		//cDest = c:
 		updateDist();
 	}
@@ -171,3 +167,4 @@ public class NoWhereMIDlet
 			);
 	}
 }
+
